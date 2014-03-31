@@ -1,0 +1,106 @@
+" Vundle installations
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/vundle/
+call vundle#rc()
+
+Plugin 'kien/ctrlp.vim'
+Plugin 'rizzatti/dash.vim'
+Plugin 'rizzatti/funcoo.vim'
+Plugin 'fholgado/minibufexpl.vim'
+Plugin 'scrooloose/syntastic'
+Plugin 'bling/vim-airline'
+Plugin 'elixir-lang/vim-elixir'
+Plugin 'tpope/vim-fugitive'
+Plugin 'dgryski/vim-godef'
+Plugin 'tpope/vim-rails'
+Plugin 'pgr0ss/vimux-ruby-test'
+
+" Pathogen installations
+call pathogen#infect()
+
+" Use bash - too much breaks if we use fish :(
+filetype plugin on
+set shell=/bin/bash
+
+" Now everything else #TODO: better comments
+syntax enable
+set t_Co=256
+colo lettuce
+
+set nocompatible
+"set modelines=0
+set encoding=utf-8
+set visualbell
+set cursorline
+set backspace=indent,eol,start
+set undofile
+set nu
+
+set wildmode=longest:full
+set wildmenu
+
+let mapleader = ","
+
+set ignorecase
+set smartcase
+set gdefault
+set incsearch
+set showmatch
+set hlsearch
+nnoremap <leader><space> :noh<cr>
+nnoremap <tab> %
+vnoremap <tab> %
+set formatoptions=qrn1
+
+nnoremap <leader>a :G
+inoremap jj <ESC>
+
+"colo solarized
+
+" Copyright James Kassemi, 2010 (.vimrc and all .vim files)
+" ---------------------------------------------------------------------
+
+
+au! BufRead,BufNewFile *.sass setfiletype sass
+au! BufRead,BufNewFile *.coffee setfiletype coffee
+au! BufRead,BufNewFile *.sc setfiletype ruby
+au! BufRead,BufNewFile *.md set textwidth=80
+
+set softtabstop=2 shiftwidth=2 expandtab
+
+au! BufRead,BufNewFile *.go set tabstop=2
+au! BufRead,BufNewFile set nonu
+au! BufRead,BufNewFile set nowrap
+
+"map tt :NERDTreeToggle<CR>
+"set statusline=%<%f\ %h%m%r%{fugitive#statusline()}%=%-14.(%l,%c%V%)\ %P 
+
+"let g:easytags_dynamic_files = 1
+
+set runtimepath^=~/.vim/bundle/ctrlp.vim
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip,*.un~  " MacOSX/Linux
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+  \ 'file': '\.exe$\|\.so$\|\.dll$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+
+let g:ctrlp_max_files = 0
+let g:ctrlp_max_depth = 50
+
+nmap <leader>f :CtrlPBuffer<CR>
+inoremap <leader><leader> <C-x><C-o>
+
+autocmd QuickFixCmdPost *grep* cwindow
+autocmd BufReadPost,BufNewFile,BufRead fugitive://* set bufhidden=delete
+
+" Syntastic
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+"let g:syntastic_check_on_open=1
+let g:godef_split = 0
+
+set laststatus=2
