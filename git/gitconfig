@@ -4,6 +4,7 @@
 
 [core]
   editor = /usr/local/bin/vim
+  whitespace = trailing-space
 
 [push]
   default = current
