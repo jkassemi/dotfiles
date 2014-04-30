@@ -17,13 +17,6 @@ rbenv rehash >/dev/null ^&1
 # Node
 set PATH /usr/local/share/npm/bin $PATH
 
-# Golang
-set -xg GOROOT /usr/local/go/
-set -xg GOPATH $HOME/Documents/mygo 
-set -xg PATH $GOPATH $PATH
-set -xg PATH /usr/local/go/bin $PATH
-set -xg PATH $HOME/Documents/mygo/bin $PATH
-
 # Docker
 set -xg DOCKER_HOST tcp://172.16.42.43:4243
 
