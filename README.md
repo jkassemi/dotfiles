@@ -16,16 +16,22 @@
 ```
 
 7. Install dotfiles
+
 ```
   $ git clone https://github.com/jkassemi/dotfiles.git
   $ cd dotfiles; ./install.sh
 ```
 
+8. Install iTerm2 - http://www.iterm2.com/#/section/home
+9. Set iTerm2 profile colors to "Pastel (Dark Background)"
 
 ## Install before you forget:
 
 Fl.ux | http://justgetflux.com/
+
 Caffeine | https://itunes.apple.com/us/app/caffeine/id411246225
+
+Iterm 2 | http://www.iterm2.com/#/section/home
 
 ## In evaluation before addition
 
