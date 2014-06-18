@@ -26,6 +26,11 @@
 9. Set iTerm2 profile colors to "Pastel (Dark Background)"
 10. Install VirtualBox https://www.virtualbox.org/wiki/Downloads
 11. Install Vagrant http://www.vagrantup.com/downloads.html
+12. Install Ansible
+
+```
+  $ brew install ansible
+```
 
 ## Install before you forget:
 
