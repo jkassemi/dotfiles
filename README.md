@@ -24,6 +24,7 @@
 
 8. Install iTerm2 - http://www.iterm2.com/#/section/home
 9. Set iTerm2 profile colors to "Pastel (Dark Background)"
+10. Install VirtualBox https://www.virtualbox.org/wiki/Downloads
 
 ## Install before you forget:
 
