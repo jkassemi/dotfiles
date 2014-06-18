@@ -32,6 +32,12 @@
   $ brew install ansible
 ```
 
+13. Install tmux:
+
+```
+  $ brew install tmux
+```
+
 ## Install before you forget:
 
 Fl.ux | http://justgetflux.com/
