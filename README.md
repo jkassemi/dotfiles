@@ -9,8 +9,14 @@
   $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 ```
 
+6. Install fish 
+
 ```
   $ brew install fish
+```
+
+7. Install dotfiles
+```
   $ git clone https://github.com/jkassemi/dotfiles.git
   $ cd dotfiles; ./install.sh
 ```
