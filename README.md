@@ -24,15 +24,16 @@
 
 8. Install iTerm2 - http://www.iterm2.com/#/section/home
 9. Set iTerm2 profile colors to "Pastel (Dark Background)"
-10. Install VirtualBox https://www.virtualbox.org/wiki/Downloads
-11. Install Vagrant http://www.vagrantup.com/downloads.html
-12. Install Ansible
+10. Set iTerm2 report terminal type to xterm-256color
+11. Install VirtualBox https://www.virtualbox.org/wiki/Downloads
+12. Install Vagrant http://www.vagrantup.com/downloads.html
+13. Install Ansible
 
 ```
   $ brew install ansible
 ```
 
-13. Install tmux:
+14. Install tmux:
 
 ```
   $ brew install tmux
