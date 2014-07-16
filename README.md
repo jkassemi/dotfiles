@@ -42,10 +42,6 @@
 
 ## Install before you forget:
 
-Fl.ux | http://justgetflux.com/
-
-Caffeine | https://itunes.apple.com/us/app/caffeine/id411246225
-
 Iterm 2 | http://www.iterm2.com/#/section/home
 
 ## In evaluation before addition
