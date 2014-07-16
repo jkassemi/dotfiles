@@ -30,5 +30,17 @@ cd YouCompleteMe
 git submodule update --init --recursive
 ./install.sh
 
-##
+# Install trailing whitespace highlighter
+if test -e ~/.vim/bundle/vim-better-whitespace
+else
+  git clone git://github.com/ntpeters/vim-better-whitespace.git ~/.vim/bundle/vim-better-whitespace
+end
+
+# Install tabular
+if test -e ~/.vim/bundle/tabular
+else
+  git clone git://github.com/godlygeek/tabular.git ~/.vim/bundle/tabular
+end
+
+#
 vim +PluginInstall +qall
