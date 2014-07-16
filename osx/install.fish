@@ -1,7 +1,5 @@
 # Install Karabiner from https://github.com/tekezo/Karainer/
-
-mkdir -p "~/Library/Application Support/Karabiner"
-cp private.xml ~/Library/Application\ Support/Karabiner/
+sh ./karabiner.sh
 
 # Sets reasonable OS X defaults.
 # 
