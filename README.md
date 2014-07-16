@@ -1,5 +1,6 @@
 1. Download/Install Chrome
 2. Download/Install Postgres.app
+3. Download/Install [Karabiner](https://github.com/tekezo/Karabiner/)
 2. Configure trackpad settings (tap to click, scroll direction unnatural)
 3. Configure trackpad settings in Accessibility panel -> Trackpad Options "Enable Dragging with Drag Lock"
 4. Configure keyboard (Caps Lock = CTRL)
