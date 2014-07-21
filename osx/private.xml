@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<root>
+  <devicevendordef>
+    <vendorname>KINESIS</vendorname>
+    <vendorid>0x058f</vendorid>
+  </devicevendordef>
+
+  <deviceproductdef>
+    <productname>FREESTYLE2</productname>
+    <productid>0x9410</productid>
+  </deviceproductdef>
+
+  <devicelocationdef>
+    <locationname>KINESIS_HOME_HOME</locationname>
+    <locationid>0x1521000</locationid>
+  </devicelocationdef>
+
+  <modifierdef>KMODE</modifierdef>
+
+  <item>
+    <name>Hold Tab Modifier</name>
+    <identifier>private.hold_tab</identifier>
+    <autogen>__KeyOverlaidModifier__ KeyCode::TAB, KeyCode::VK_MODIFIER_KMODE, KeyCode::TAB</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + 4 to switch windows</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tab4</identifier>
+    <autogen>__KeyToKey__ KeyCode::KEY_4, ModifierFlag::KMODE, KeyCode::TAB, ModifierFlag::COMMAND_L</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + 2 to switch windows in the other direction</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tab2</identifier>
+    <autogen>__KeyToKey__ KeyCode::KEY_2, ModifierFlag::KMODE, KeyCode::TAB, ModifierFlag::COMMAND_L | ModifierFlag::SHIFT_L</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + W for Command + W</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tabw</identifier>
+    <autogen>__KeyToKey__ KeyCode::W, ModifierFlag::KMODE, KeyCode::W, ModifierFlag::COMMAND_L</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + R for Command + R</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tabr</identifier>
+    <autogen>__KeyToKey__ KeyCode::R, ModifierFlag::KMODE, KeyCode::R, ModifierFlag::COMMAND_L</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + T for Command + T</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tabt</identifier>
+    <autogen>__KeyToKey__ KeyCode::T, ModifierFlag::KMODE, KeyCode::T, ModifierFlag::COMMAND_L</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + L for Command + L</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tabl</identifier>
+    <autogen>__KeyToKey__ KeyCode::L, ModifierFlag::KMODE, KeyCode::L, ModifierFlag::COMMAND_L</autogen>
+  </item>
+
+  <item>
+    <name>Hold Tab + F for Command + F</name>
+    <appendix>(+ when you type Tab only, send Tab)</appendix>
+    <identifier>private.hold_tabf</identifier>
+    <autogen>__KeyToKey__ KeyCode::F, ModifierFlag::KMODE, KeyCode::F, ModifierFlag::COMMAND_L</autogen>
+  </item>
+</root>
