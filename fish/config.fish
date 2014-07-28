@@ -14,7 +14,8 @@ set PATH /usr/local/share/npm/bin $PATH
 
 # Docker
 set -xg DOCKER_HOST tcp://172.16.42.43:4243
-
 set fish_git_dirty_color red
-
 source $fish_path/oh-my-fish.fish
+
+# Vim
+set -xg EDITOR /usr/local/bin/vim
