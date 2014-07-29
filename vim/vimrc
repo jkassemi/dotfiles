@@ -31,7 +31,6 @@ syntax enable
 set t_Co=256
 colo lettuce
 
-set nocompatible
 "set modelines=0
 set encoding=utf-8
 set visualbell
@@ -116,3 +115,5 @@ if has("persistent_undo")
    set undodir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
    set undofile
 endif
+
+let ruby_no_expensive = 1

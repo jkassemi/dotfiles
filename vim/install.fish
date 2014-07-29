@@ -12,6 +12,11 @@ else
   git clone https://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 end
 
+if test -e ~/.vim/bundle/vim-ruby
+else
+  git clone https://github.com/vim-ruby/vim-ruby.git ~/.vim/bundle/vim-ruby
+end
+
 # Install vim-go
 # http://blog.gopheracademy.com/vimgo-development-environment
 cd ~/.vim/bundle
