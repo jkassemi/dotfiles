@@ -9,6 +9,9 @@ set PATH /usr/local/bin $PATH
 set PATH /usr/local/sbin $PATH
 set PATH $HOME/.bin $PATH
 
+# Everything in moderation
+set -xg NO_SIMPLECOV true
+
 # Node
 set PATH /usr/local/share/npm/bin $PATH
 
