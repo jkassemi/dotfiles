@@ -117,3 +117,6 @@ if has("persistent_undo")
 endif
 
 let ruby_no_expensive = 1
+
+" w!! when you should have opened the thing with sudo
+cmap w!! w !sudo tee % >/dev/null
