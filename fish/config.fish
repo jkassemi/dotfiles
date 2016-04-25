@@ -22,3 +22,6 @@ source $fish_path/oh-my-fish.fish
 
 # Vim
 set -xg EDITOR /usr/local/bin/vim
+
+# No phoning home by default
+set -xg HOMEBREW_NO_ANALYTICS 1
