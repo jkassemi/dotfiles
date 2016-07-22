@@ -7,7 +7,8 @@
 5. Install Homebrew
 
 ```
-  $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+  $ /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+
 ```
 
 6. Install fish 
@@ -39,11 +40,3 @@
 ```
   $ brew install tmux
 ```
-
-## Install before you forget:
-
-Iterm 2 | http://www.iterm2.com/#/section/home
-
-## In evaluation before addition
-
-vim-gitgutter | https://github.com/airblade/vim-gitgutter
