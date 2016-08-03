@@ -47,5 +47,12 @@ else
   git clone git://github.com/godlygeek/tabular.git ~/.vim/bundle/tabular
 end
 
+# Install vimgutter
+if test -e ~/.vim/bundle/vim-gitgutter
+else
+  git clone git://github.com/airblade/vim-gitgutter.git ~/.vim/bundle/vim-gitgutter
+end
+
+
 #
 vim +PluginInstall +qall
