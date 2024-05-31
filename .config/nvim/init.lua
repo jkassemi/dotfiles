@@ -235,7 +235,7 @@ require('pckr').add{
 		-- NOTE: Please see `:h coc-status` for integrations with external plugins that
 		-- provide custom statusline: lightline.vim, vim-airline
 
-		vim.opt.statusline:prepend("%{coc#status()}%{get(b:,'coc_current_function','')}")
+		-- vim.opt.statusline:prepend("%{coc#status()}%{get(b:,'coc_current_function','')}")
 
 		-- Mappings for CoCList
 		-- code actions and coc stuff
@@ -293,17 +293,19 @@ require('pckr').add{
 		harpoon:setup()
 
 		local list = harpoon:list('ffh')
-
+		local pickers = require("telescope.pickers")
 		local conf = require("telescope.config").values
+		local finders = require("telescope.finders")
+
 		local function toggle_telescope(harpoon_files)
 		    local file_paths = {}
 		    for _, item in ipairs(harpoon_files.items) do
 			table.insert(file_paths, item.value)
 		    end
 
-		    require("telescope.pickers").new({}, {
+		    pickers.new({}, {
 			prompt_title = "Harpoon",
-			finder = require("telescope.finders").new_table({
+			finder = finders.new_table({
 			    results = file_paths,
 			}),
 			previewer = conf.file_previewer({}),
@@ -311,14 +313,18 @@ require('pckr').add{
 		    }):find()
 		end
 
-
-		vim.keymap.set("n", "ffm", function()
+		vim.keymap.set("n", "mm", function()
+			list:add()
 			local item = vim.fn.expand('%:p') .. ':' .. vim.fn.line('.') 
-			list:add(item)
 			vim.notify("harpoon <-- " .. item, vim.log.levels.INFO)
 		end)
 
-		vim.keymap.set("n", "ffh", function() toggle_telescope(list) end,
+		vim.keymap.set("n", "md", function()
+			list:clear()
+			vim.notify("harpoon <-- {}", vim.log.levels.INFO)
+		end)
+
+		vim.keymap.set("n", "ffm", function() toggle_telescope(list) end,
 		    { desc = "Open harpoon window" })
 
 		vim.keymap.set("n", "<C-h>", function() list:select(2) end)
@@ -333,7 +339,7 @@ require('pckr').add{
 		M = {}
 
 		M.changed_files = function(opts)
-			local base_branch = vim.g.telescope_changed_files_base_branch or "develop"
+			local base_branch = vim.g.telescope_changed_files_base_branch or "master"
 			local command = "git diff --name-only $(git merge-base HEAD " .. base_branch .. " )"
 			local handle = io.popen(command)
 			local result = handle:read("*a")
@@ -346,11 +352,12 @@ require('pckr').add{
 
 			opts = opts or {}
 
-			require("telescope.pickers").new(opts, {
+			pickers.new(opts, {
 				prompt_title = "changed files",
-				finder = require("telescope.finders").new_table {
-					results = files
+				finder = finders.new_table {
+					results = files,
 				},
+				previewer = conf.file_previewer({}),
 				sorter = conf.generic_sorter(opts),
 			}):find()
 		end
