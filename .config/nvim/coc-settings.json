@@ -1,0 +1,6 @@
+{
+	"ruff.useDetectRuffCommand": true,
+	"pyright.enable": true,
+	"python.analysis.autoImportCompletions": true,
+	"python.pythonPath": "/Users/james/.pyenv/shims/python"
+}
