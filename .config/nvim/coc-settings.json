@@ -1,5 +1,5 @@
 {
-	"ruff.useDetectRuffCommand": true,
+	"ruff.enable": true,
 	"ruff.autoFixOnSave": true,
 	"pyright.enable": true,
 	"python.analysis.autoImportCompletions": true,
