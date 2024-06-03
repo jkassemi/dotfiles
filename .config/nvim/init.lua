@@ -31,9 +31,11 @@ end)
 
 -- shortcut: previous buffer
 vim.keymap.set("n", "<Left>", ":bn<cr>", { silent = true})
+vim.keymap.set("n", ";h", ":bn<cr>", { silent = true})
 
 -- shortcut: next buffer
 vim.keymap.set("n", "<Right>", ":bp<cr>", { silent = true})
+vim.keymap.set("n", ";l", ":bp<cr>", { silent = true})
 
 -- shortcut: swap
 vim.keymap.set("n", ";;", ":b#<cr>", { silent = true})
@@ -76,6 +78,7 @@ end
 bootstrap_pckr()
 
 require('pckr').add{
+	-- Find, Filter, Preview, Pick. All lua, all the time.
   { "nvim-telescope/telescope.nvim", branch = "0.1.x", requires = {"nvim-lua/plenary.nvim"},
 	config = function()
 		-- basic telescope configuration
@@ -95,9 +98,14 @@ require('pckr').add{
 		vim.keymap.set("n", "fff", builtin.find_files, {})
 		vim.keymap.set("n", "ffx", builtin.live_grep, {})
 		vim.keymap.set("n", "ffl", builtin.buffers, {})
+
+		vim.keymap.set("n", "<C-f>l", builtin.buffers, {})
+		vim.keymap.set("n", "<C-f>/", builtin.live_grep, {})
+		vim.keymap.set("n", "<C-f>p", builtin.find_files, {})
+
 	end
   };
-
+	-- Code completion
   {'neoclide/coc.nvim', branch = 'release', 
   	config = function()
 		-- Use Tab for trigger completion with characters ahead and navigate
@@ -142,7 +150,6 @@ require('pckr').add{
 		  command = "silent call CocActionAsync('highlight')",
 		  desc = 'Highlight symbol under cursor on CursorHold'
 		})
-
 
 		-- Symbol renaming
 		keyset('n', '<leader>rn', '<Plug>(coc-rename)', { silent = true })
@@ -260,11 +267,13 @@ require('pckr').add{
 
 	end
 	};
+
   { "fannheyward/telescope-coc.nvim", requires={"neoclide/coc.nvim", "nvim-telescope/telescope.nvim"}, 
 		config = function()
 			require("telescope").load_extension("coc")
 		end
 	};
+
 
   {'vim-airline/vim-airline', branch = 'master', requires={
 	"airblade/vim-gitgutter", 
@@ -276,8 +285,10 @@ require('pckr').add{
 		  let g:airline#extensions#tabline#enabled = 1
 		  let g:airline#extensions#tabline#buffers_label = ''
 		  let g:airline#extensions#tabline#show_buffers = 1
-		  let g:airline#extensions#tabline#show_tab_nr = 1
+		  let g:airline#extensions#tabline#show_tab_nr = 0
 		  let g:airline#extensions#tabline#show_tab_type = 'buffer'
+		  let g:airline#extensions#tabline#buffer_nr_show = 0
+
 		]])
 	end
   };
@@ -405,5 +416,11 @@ require('pckr').add{
 		})
 	end,
   };
+
+	{ "nomnivore/ollama.nvim", requires = {"nvim-lua/plenary.nvim"}, 
+		config = function()
+
+		end,
+	};
 }
 
