@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+export PATH="$PATH:/Users/james/.cargo/bin"
+export PYTHONPATH="$PYTHONPATH:/Users/james/.pyenv/versions/3.11.6/lib/python3.11/site-packages:/Users/james/closeio/closeio"
+export ERG_PATH="/Users/james/.erg"
+
+eval "$(pyenv init -)"
+echo "$@" >> ~/tmp.history
+
+exec "$@"

@@ -1,8 +1,0 @@
-{
-	"ruff.enable": true,
-	"ruff.autoFixOnSave": true,
-	"pyright.enable": true,
-	"python.analysis.autoImportCompletions": true,
-	"python.pythonPath": "/Users/james/.pyenv/shims/python",
-	"python.formatting.provider": "none"
-}
