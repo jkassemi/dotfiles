@@ -1,0 +1,7 @@
+#
+# ~/.bash_profile
+#
+
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+
+[[ ! -f "$HOME/.local/bin/env" ]] || source "$HOME/.local/bin/env"

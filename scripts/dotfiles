@@ -1,0 +1,105 @@
+#!/usr/bin/env python3
+"""Explicit, reviewable copies between home and this repository. No recursive discovery."""
+import argparse
+import datetime
+import json
+import os
+from pathlib import Path
+import shutil
+import sys
+import tempfile
+
+REPO = Path(__file__).resolve().parents[1]
+
+
+def exists(path):
+    return path.exists() or path.is_symlink()
+
+
+def same(a, b):
+    if not exists(a) or not exists(b):
+        return False
+    if a.is_symlink() or b.is_symlink():
+        return a.is_symlink() and b.is_symlink() and os.readlink(a) == os.readlink(b)
+    return a.read_bytes() == b.read_bytes() and (a.stat().st_mode & 0o111) == (b.stat().st_mode & 0o111)
+
+
+def copy(source, target):
+    target.parent.mkdir(parents=True, exist_ok=True)
+    fd, name = tempfile.mkstemp(prefix='.dotfiles-', dir=target.parent)
+    os.close(fd)
+    temporary = Path(name)
+    try:
+        if source.is_symlink():
+            temporary.unlink()
+            temporary.symlink_to(os.readlink(source))
+        else:
+            shutil.copy2(source, temporary)
+        os.replace(temporary, target)
+    finally:
+        if exists(temporary):
+            temporary.unlink()
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('command', choices=['status', 'capture', 'apply'])
+    parser.add_argument('--write', action='store_true', help='perform copies; otherwise preview only')
+    parser.add_argument('--home', type=Path, default=Path.home(), help='alternate home for restore tests')
+    args = parser.parse_args()
+    home = args.home.resolve()
+    manifest = json.loads((REPO / 'manifest.json').read_text())
+    if not isinstance(manifest, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in manifest.items()):
+        parser.error('manifest must map repository paths to home-relative destinations')
+    if len(set(manifest.values())) != len(manifest):
+        parser.error('duplicate manifest destinations')
+    changes = []
+    for repo_rel, rel in manifest.items():
+        for value in (repo_rel, rel):
+            path = Path(value)
+            if path.is_absolute() or '..' in path.parts or str(path) in ('.', '') or str(path) != value:
+                parser.error(f'unsafe manifest path: {value}')
+        if Path(repo_rel).parts[0] not in ('config', 'shell', 'bin', 'systemd'):
+            parser.error(f'unsupported source directory: {repo_rel}')
+        live, saved = home / rel, REPO / repo_rel
+        source, target = (live, saved) if args.command == 'capture' else (saved, live)
+        # Never traverse a symlinked parent when copying either direction.
+        for candidate, root in [(live, home), (saved, REPO)]:
+            for parent in candidate.parents:
+                if parent == root:
+                    break
+                if parent.is_symlink():
+                    parser.error(f'symlinked parent needs manual review: {parent}')
+        if not exists(source):
+            parser.error(f'missing source (nothing deleted): {source}')
+        if not source.is_file() and not source.is_symlink():
+            parser.error(f'not a file: {source}')
+        if exists(target) and not target.is_file() and not target.is_symlink():
+            parser.error(f'target is not a file: {target}')
+        if not same(source, target):
+            changes.append((rel, source, target))
+    for rel, _, _ in changes:
+        print(f'{args.command}: {rel}')
+    if args.command == 'status':
+        print(f'{len(changes)} file(s) differ; {len(manifest)} managed')
+        return bool(changes)
+    if not args.write:
+        print(f'Preview: {len(changes)} file(s); add --write to copy. No files changed.')
+        return 0
+    if not changes:
+        print('Already up to date.')
+        return 0
+    stamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f')
+    backup = home / '.local/state/dotfiles/backups' / stamp / args.command
+    # Back up every overwritten file before changing any destinations.
+    for rel, _, target in changes:
+        if exists(target):
+            copy(target, backup / rel)
+    for _, source, target in changes:
+        copy(source, target)
+    print(f'Copied {len(changes)} file(s). Previous files backed up under {backup}')
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

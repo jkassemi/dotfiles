@@ -1,0 +1,44 @@
+# If not running interactively, don't do anything (leave this at the top of this file)
+[[ $- != *i* ]] && return
+
+# All the default Omarchy aliases and functions
+# (don't mess with these directly, just overwrite them here!)
+# /etc/omarchy.conf is written by omarchy-dev-link. When absent, force the
+# package default instead of preserving a stale inherited dev-link value before
+# we decide which rc file to source.
+if [[ -f /etc/omarchy.conf ]]; then
+  source /etc/omarchy.conf
+  export OMARCHY_PATH="${OMARCHY_PATH:-/usr/share/omarchy}"
+else
+  export OMARCHY_PATH=/usr/share/omarchy
+fi
+source "$OMARCHY_PATH/default/bash/rc"
+[[ ! -f "$HOME/.local/bin/env" ]] || source "$HOME/.local/bin/env"
+
+# Add your own exports, aliases, and functions here.
+#
+# Make an alias for invoking commands you use constantly
+alias vim='uv run nvim'
+alias pbcopy='wl-copy'
+alias pbpaste='wl-paste'
+alias aider="uvx --from aider-chat -w audioop-lts aider --no-gitignore"
+alias duckdb="docker run --rm -it -v "$(pwd):/workspace" -w /workspace duckdb/duckdb duckdb"
+alias ls="ls --color"
+alias pgcli="uv tool run pgcli"
+alias alembic="uv run python -m alembic"
+alias hf="uv tool run --from 'huggingface_hub[cli]' hf"
+
+set -o vi
+alias lightning="uv tool run --from lightning-sdk lightning"
+export EDITOR=/usr/bin/nvim
+alias lz4="lz4 --remove -m"
+
+firefox-private() {
+  local profile
+  profile="$(mktemp -d)"
+  firefox --no-remote --profile "$profile" "$@"
+  rm -rf "$profile"
+}
+
+# Private machine/project additions (never committed).
+[[ ! -f ~/.bashrc.local ]] || source ~/.bashrc.local

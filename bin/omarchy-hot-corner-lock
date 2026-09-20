@@ -1,0 +1,68 @@
+#!/usr/bin/python3
+"""Lock after a 0.5-second dwell in the leftmost monitor's bottom-left 3px."""
+import json
+import os
+import socket
+import subprocess
+import time
+
+
+def query(command):
+    path = (os.environ['XDG_RUNTIME_DIR'] + '/hypr/' +
+            os.environ['HYPRLAND_INSTANCE_SIGNATURE'] + '/.socket.sock')
+    with socket.socket(socket.AF_UNIX) as connection:
+        connection.settimeout(2)
+        connection.connect(path)
+        connection.sendall(('j/' + command).encode())
+        chunks = []
+        while chunk := connection.recv(65536):
+            chunks.append(chunk)
+    return json.loads(b''.join(chunks))
+
+
+def corner(monitors):
+    available = [m for m in monitors if not m.get('disabled')
+                 and m.get('mirrorOf', 'none') in ('none', '')]
+    if not available:
+        return None
+    m = min(available, key=lambda m: (m['x'], m['y']))
+    height = m['width'] if m.get('transform', 0) % 2 else m['height']
+    return m['x'], m['y'] + round(height / m['scale'])
+
+
+def main():
+    entered = None
+    armed = False  # Require leaving the corner before the first activation.
+    target = None
+    refresh_at = 0
+    while True:
+        try:
+            now = time.monotonic()
+            if now >= refresh_at:
+                updated = corner(query('monitors'))
+                if updated != target:
+                    entered, armed = None, False
+                target = updated
+                refresh_at = now + 2
+            cursor = query('cursorpos')
+            inside = (target is not None and
+                      target[0] <= cursor['x'] < target[0] + 3 and
+                      target[1] - 3 <= cursor['y'] < target[1])
+            if not inside:
+                entered, armed = None, True
+            elif armed:
+                if entered is None:
+                    entered = now
+                elif now - entered >= 0.5:
+                    armed = False
+                    subprocess.run(['omarchy', 'system', 'lock'], timeout=15,
+                                   check=False)
+        except (OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
+            print(f'Hot corner waiting for desktop: {error}', flush=True)
+            entered, armed = None, False
+            time.sleep(2)
+        time.sleep(0.2)
+
+
+if __name__ == '__main__':
+    main()
