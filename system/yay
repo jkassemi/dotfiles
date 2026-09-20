@@ -1,0 +1,20 @@
+#!/bin/bash
+# Local policy: disable the AUR helper without changing Omarchy package files.
+# Keep the two read-only queries used by Omarchy's package removal menu.
+case "${1:-}" in
+  -Qi)
+    shift
+    exec /usr/bin/pacman -Qi -- "$@"
+    ;;
+  -Qqe)
+    if (( $# == 1 )); then
+      exec /usr/bin/pacman -Qqe
+    fi
+    ;;
+  -Sua)
+    printf '%s\n' 'AUR updates skipped: disabled by local policy.' >&2
+    exit 0
+    ;;
+esac
+printf '%s\n' 'AUR/yay is disabled by local policy.' 'Use omarchy pkg add or pacman for configured repository packages.' >&2
+exit 1

@@ -11,6 +11,7 @@ config/       application configuration → ~/.config/
 shell/        bashrc and bash_profile → ~/.bashrc and ~/.bash_profile
 bin/          personal helpers → ~/.local/bin/
 systemd/      user services → ~/.config/systemd/user/
+system/       separately installed system configuration (AUR guard)
 install       preview/install entry point
 scripts/      capture, comparison, and desktop activation tools
 ```
@@ -45,6 +46,8 @@ Missing sources are errors; capture never silently deletes a saved configuration
 ./install                               # preview repository -> live
 ./install --write                        # back up differing files, then copy
 ./install --write --activate             # also apply preferences/reload desktop
+./scripts/install-aur-guard              # preview the system-level yay block
+./scripts/install-aur-guard --write      # restore the block; sudo if needed
 ```
 
 The activation script reloads and validates Hyprland, enables/restarts the hot
@@ -94,6 +97,33 @@ Current appearance is the stock `tokyo-night` theme with `1-quattro.jpg`. On a
 fresh machine, use `omarchy theme set tokyo-night`; the packaged theme provides
 its background and generated terminal/editor colors. Theme selection remains
 an explicit restore step rather than copying generated files.
+
+## AUR policy
+
+`system/yay` is the saved copy of the local AUR guard at `/usr/local/bin/yay`.
+Restore it with `./scripts/install-aur-guard --write` in a terminal. The installer
+previews by default, leaves an identical installation alone, and makes numbered
+backups beside an existing destination before replacing it. It installs a
+root-owned executable outside package-managed paths, so upgrading `yay` does
+not overwrite it. This privileged step is separate from `./install` and the
+home-only manifest; `scripts/dotfiles status` and `capture` do not include it.
+Run `./scripts/install-aur-guard` to check it; capture an intentional live edit
+with `cp /usr/local/bin/yay system/yay` and review the diff.
+
+The guard blocks `yay` installs, searches, and builds, including Omarchy's Chrome
+installer. It preserves the `-Qi` and `-Qqe` queries used by Omarchy's removal
+menu. Omarchy's `yay -Sua` step reports that AUR updates are skipped and succeeds,
+allowing the rest of a system update to continue. Regular repository operations
+use `pacman` or `omarchy pkg add`. Existing non-repository packages stay installed
+but no longer receive AUR updates. The installer does not remove Chrome or any
+other package on a restored machine.
+
+`/usr/local/bin` must precede `/usr/bin` in the terminal and desktop session's
+PATH, as it does in the current Omarchy setup. Verify with `command -v yay` in a
+new terminal; it should print `/usr/local/bin/yay`. This is an accidental-use
+guard, not a security boundary: `/usr/bin/yay`, other helpers, and manual
+`makepkg` invocations bypass it. Deliberately removing `/usr/local/bin/yay`
+restores the packaged helper. Omarchy 4.0.4 has no built-in AUR-disable switch.
 
 ## Machine-specific and private configuration
 

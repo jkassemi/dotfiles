@@ -1,0 +1,44 @@
+#!/bin/bash
+# System files are separate from the home-only dotfiles manifest.
+set -euo pipefail
+
+if (( $# > 1 )) || [[ ${1:-} != '' && ${1:-} != '--write' ]]; then
+  echo "Usage: $0 [--write]" >&2
+  exit 2
+fi
+
+repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+source_file="$repo/system/yay"
+target=/usr/local/bin/yay
+
+/bin/bash -n "$source_file"
+if [[ -L /usr/local || -L /usr/local/bin || -L $target ]]; then
+  echo "Symlinked system destination needs manual review: $target" >&2
+  exit 1
+fi
+if [[ -e $target && ! -f $target ]]; then
+  echo "Destination is not a regular file: $target" >&2
+  exit 1
+fi
+
+if [[ -f $target ]] && cmp -s "$source_file" "$target" &&
+    [[ $(stat -c '%u:%g:%a' "$target") == '0:0:755' ]]; then
+  echo "AUR guard already installed: $target"
+  exit 0
+fi
+
+if [[ ${1:-} != '--write' ]]; then
+  echo "Preview: install system/yay as root:root, mode 0755 at $target."
+  echo 'Existing file receives a numbered backup alongside the destination.'
+  echo 'Add --write to install. No files changed.'
+  exit 0
+fi
+
+# sudo is for a person running this installer in their terminal.
+elevate=()
+if (( EUID != 0 )); then
+  elevate=(sudo)
+fi
+"${elevate[@]}" /usr/bin/install -D --backup=numbered -o root -g root -m 0755 \
+  "$source_file" "$target"
+echo "AUR guard installed: $target"

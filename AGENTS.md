@@ -6,6 +6,10 @@ configuration and keep /usr/share/omarchy read-only.
 
 - `config/`, `shell/`, `bin/`, and `systemd/` contain source files.
   `manifest.json` maps each source to its home-relative install destination.
+- `system/yay` is installed separately at `/usr/local/bin/yay` by
+  `scripts/install-aur-guard` (preview by default; `--write` installs with sudo
+  if needed). Keep it out of the home-only manifest; compare it with the live
+  guard before editing. See README.md for the AUR policy and its limits.
 - Use `./install` to preview, `./install --write` to install, and add
   `--activate` only to apply preferences and reload the active desktop.
 - Store Omarchy toggle preferences as commands in scripts/activate-omarchy,
