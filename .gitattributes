@@ -1,0 +1,5 @@
+# Preserve checksummed vendor inputs byte-for-byte, including original CRLF.
+vendor/brother-hll2300d/* -text
+# Keep the original license formatting instead of rewriting vendor documents.
+vendor/brother-hll2300d/COPYING.cupswrapper -whitespace
+vendor/brother-hll2300d/LICENSE.lpr.html -whitespace

@@ -12,6 +12,7 @@ shell/        bashrc and bash_profile → ~/.bashrc and ~/.bash_profile
 bin/          personal helpers → ~/.local/bin/
 systemd/      user services → ~/.config/systemd/user/
 system/       separately installed system configuration (AUR guard)
+vendor/       pinned Brother driver package, original inputs, and licenses
 install       preview/install entry point
 scripts/      capture, comparison, and desktop activation tools
 ```
@@ -48,6 +49,8 @@ Missing sources are errors; capture never silently deletes a saved configuration
 ./install --write --activate             # also apply preferences/reload desktop
 ./scripts/install-aur-guard              # preview the system-level yay block
 ./scripts/install-aur-guard --write      # restore the block; sudo if needed
+./scripts/install-brother-driver         # verify/preview the pinned Brother driver
+./scripts/install-brother-driver --write # install if missing and protect against upgrades
 ```
 
 The activation script reloads and validates Hyprland, enables/restarts the hot
@@ -124,6 +127,22 @@ new terminal; it should print `/usr/local/bin/yay`. This is an accidental-use
 guard, not a security boundary: `/usr/bin/yay`, other helpers, and manual
 `makepkg` invocations bypass it. Deliberately removing `/usr/local/bin/yay`
 restores the packaged helper. Omarchy 4.0.4 has no built-in AUR-disable switch.
+
+## Pinned Brother printer driver
+
+The working HL-L2300D driver is vendored as `brother-hll2300d 3.2.0_1-1` for
+x86_64. `./scripts/install-brother-driver --write` verifies the pinned SHA-256,
+installs the local package only if missing, and installs a pacman hook that
+rejects driver upgrades/reinstalls. No AUR access or driver rebuild is needed.
+The current driver and CUPS configuration are left unchanged. Like the AUR
+guard, this is a separate privileged restore step outside the home manifest.
+
+Other system packages continue updating. If a transaction tries to replace
+this driver, the hook stops that entire transaction until explicitly reviewed.
+See [the vendored driver notes](vendor/brother-hll2300d/README.md) for dependency
+requirements, provenance, licenses, and how to deliberately change the pin.
+The notes also record Brother's newer security-related release, which this
+requested pin does not adopt.
 
 ## Machine-specific and private configuration
 

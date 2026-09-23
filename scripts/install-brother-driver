@@ -1,0 +1,87 @@
+#!/usr/bin/env python3
+"""Restore the vendored Brother driver and pin it; preview unless --write is given."""
+import argparse
+import hashlib
+import os
+from pathlib import Path
+import platform
+import subprocess
+import sys
+
+REPO = Path(__file__).resolve().parents[1]
+NAME = 'brother-hll2300d'
+VERSION = '3.2.0_1-1'
+ARCHIVE = REPO / 'vendor' / NAME / f'{NAME}-{VERSION}-x86_64.pkg.tar.zst'
+SHA256 = '7e9370d332d47866fe143e2df35aa12f23a683d7ae0c54db840943eb3cfc1c3e'
+HOOK = REPO / 'system/pacman/hooks/00-pin-brother-hll2300d.hook'
+TARGET = Path('/etc/pacman.d/hooks') / HOOK.name
+
+
+def query(*args):
+    return subprocess.run(['/usr/bin/pacman', *args], capture_output=True,
+                          text=True, env={**os.environ, 'LC_ALL': 'C'})
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--write', action='store_true', help='install package if missing and protect it against upgrades')
+    args = parser.parse_args(argv)
+    if platform.machine() != 'x86_64':
+        parser.error('the vendored package is for x86_64 only')
+    if hashlib.sha256(ARCHIVE.read_bytes()).hexdigest() != SHA256:
+        parser.error('vendored package checksum mismatch; refusing installation')
+    package = query('-Qp', str(ARCHIVE))
+    expected = f'{NAME} {VERSION}'
+    if package.returncode or package.stdout.strip() != expected:
+        parser.error('vendored package identity does not match the pin')
+
+    installed = query('-Q', NAME)
+    if installed.returncode == 0:
+        if installed.stdout.strip() != expected:
+            parser.error(f'different version installed: {installed.stdout.strip()}; refusing to replace it')
+        print(f'{expected} already installed; leaving driver and printer settings unchanged.')
+    elif installed.returncode != 1 or f"package '{NAME}' was not found" not in installed.stderr:
+        parser.error(f'cannot inspect installed package: {installed.stderr.strip()}')
+
+    # Refuse symlinked system paths before invoking a privileged copy.
+    for path in [TARGET, *TARGET.parents]:
+        if path.is_symlink():
+            parser.error(f'symlinked destination needs manual review: {path}')
+    if TARGET.exists() and not TARGET.is_file():
+        parser.error(f'destination is not a regular file: {TARGET}')
+    hook_data = HOOK.read_bytes()
+    pin_matches = (TARGET.is_file() and TARGET.read_bytes() == hook_data
+                   and TARGET.stat().st_uid == 0 and TARGET.stat().st_gid == 0
+                   and TARGET.stat().st_mode & 0o777 == 0o644)
+    if installed.returncode == 0 and pin_matches:
+        print('Package checksum verified; upgrade guard already installed.')
+        return 0
+
+    if not args.write:
+        if installed.returncode:
+            print(f'Preview: install {ARCHIVE.name} with pacman -U (no AUR or rebuild).')
+        if not pin_matches:
+            print(f'Preview: install upgrade guard at {TARGET} with numbered backup if replacing a file.')
+        print('Add --write to apply. No files changed.')
+        return 0
+
+    elevate = [] if os.geteuid() == 0 else ['sudo']
+    if installed.returncode:
+        dependencies = query('-T', 'perl', 'bash', 'lib32-glibc')
+        if dependencies.returncode:
+            parser.error('install required repository dependencies first: ' +
+                         (dependencies.stdout.strip() or dependencies.stderr.strip()))
+        subprocess.run([*elevate, '/usr/bin/pacman', '-U', '--needed', str(ARCHIVE)], check=True)
+    if not pin_matches:
+        subprocess.run([*elevate, '/usr/bin/install', '-D', '--backup=numbered',
+                        '-o', 'root', '-g', 'root', '-m', '0644', str(HOOK), str(TARGET)], check=True)
+    print('Pinned driver ready. Existing CUPS queues and services were not changed.')
+    return 0
+
+
+if __name__ == '__main__':
+    try:
+        sys.exit(main())
+    except (OSError, subprocess.CalledProcessError) as error:
+        print(f'Error: {error}', file=sys.stderr)
+        sys.exit(1)

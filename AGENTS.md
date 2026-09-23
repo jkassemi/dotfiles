@@ -10,6 +10,10 @@ configuration and keep /usr/share/omarchy read-only.
   `scripts/install-aur-guard` (preview by default; `--write` installs with sudo
   if needed). Keep it out of the home-only manifest; compare it with the live
   guard before editing. See README.md for the AUR policy and its limits.
+- `vendor/brother-hll2300d/` preserves the working driver, original inputs,
+  checksums, and licenses. `scripts/install-brother-driver` restores it and
+  installs the upgrade guard from `system/pacman/hooks/`. Never refresh or
+  rebuild this driver automatically; changes to the pin must be intentional.
 - Use `./install` to preview, `./install --write` to install, and add
   `--activate` only to apply preferences and reload the active desktop.
 - Store Omarchy toggle preferences as commands in scripts/activate-omarchy,

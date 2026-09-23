@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = brother-hll2300d
+
+[Action]
+Description = Brother HL-L2300D is pinned by dotfiles; refusing replacement. See vendor/brother-hll2300d/README.md.
+When = PreTransaction
+Exec = /usr/bin/false
+AbortOnFail
